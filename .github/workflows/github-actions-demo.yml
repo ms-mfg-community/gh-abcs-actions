@@ -2,11 +2,9 @@ name: 01-1. GitHub Actions Demo
 on: 
   workflow_dispatch:
   workflow_call:
-    push:
-      branches:
-        - main
-      paths:
-        - 'labs/**'
+  push:
+    branches:
+      - main
 
 jobs:
   Explore-GitHub-Actions:
@@ -25,3 +23,10 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - name: Adding markdown
         run: echo "### Hello world! :rocket:" >> "$GITHUB_STEP_SUMMARY"
+      - name: Hello world action
+        uses: actions/hello-world-javascript-action@main
+        with:
+          who-to-greet: 'Mona the Octocat'
+        id: hello
+      - name: Echo the greeting time
+        run: echo "The action greeted you at ${{ steps.hello.outputs.time }}."

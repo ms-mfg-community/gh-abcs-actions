@@ -14,3 +14,11 @@ jobs:
           who-to-greet: 'Hello from GH ABCs'
       - run: echo random-number ${{ steps.hello-world.outputs.random-number }}
         shell: bash
+      - name: Hello world
+        uses: actions/hello-world-javascript-action@main
+        with:
+          who-to-greet: "${{ inputs.who-to-greet}}"
+        id: hello
+      - name: Echo the greeting's time
+        run: echo "The time is ${{ steps.hello.outputs.time }}"
+        shell: bash

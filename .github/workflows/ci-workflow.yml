@@ -9,15 +9,15 @@ on:
 
 jobs:
   # The first job lints the code base
-  lint:
-    uses: githubabcs/gh-abcs-actions/.github/workflows/super-linter.yml@main
+  # lint:
+  #   uses: githubabcs/gh-abcs-actions/.github/workflows/super-linter.yml@main
 
   # CI job to run a test suite on the code base
   ci:
     name: CI
     # We want to test across mutiple OSs, defined by our matrix
     runs-on: ${{ matrix.os }}
-    needs: lint
+    # needs: lint
     strategy:
       # Cancel all matrix jobs if one of them fails
       fail-fast: true

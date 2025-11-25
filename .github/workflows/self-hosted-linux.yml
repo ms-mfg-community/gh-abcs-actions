@@ -16,4 +16,4 @@ jobs:
     steps:
       - name: Say hello from self-hosted runner
         run: |
-          echo "Hello ${{ github.event.inputs.name }}, from self-hosted runner!"
+          echo "Helllo ${{ github.event.inputs.name }}, from self-hosted runner!"

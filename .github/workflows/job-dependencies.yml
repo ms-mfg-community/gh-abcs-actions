@@ -1,7 +1,6 @@
 name: 02-2. Dependencies 
 
 on:
-  workflow_call:
   workflow_dispatch:
   # push:
   #   branches:
@@ -32,37 +31,3 @@ jobs:
     needs: [fanout1, fanout2]
     steps:
       - run: echo "This job will run after fanout1 and fanout2 have finished."
-  build:
-    runs-on: windows-latest
-    steps:
-      - run: echo "This job will be run in parallel with the initial job."
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - run: echo "This job will run after the build job has finished."
-  ring01:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - run: echo "This job will run after the test job has finished."
-  ring02:
-    runs-on: macos-latest
-    needs: test
-    steps:
-      - run: echo "This job will run after the test job has finished."
-  ring03:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - run: echo "This job will run after the test job has finished."
-  ring04:
-    runs-on: ubuntu-latest
-    needs: [ring01, ring02, ring03]
-    steps:
-      - run: echo "This job will run after ring01, ring02, and ring03 have finished."
-  prod:
-    runs-on: ubuntu-latest
-    needs: ring04
-    steps:
-      - run: echo "This job will run after ring04 has finished."

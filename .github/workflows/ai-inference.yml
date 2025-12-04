@@ -1,0 +1,21 @@
+name: 08-1. AI Inference
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  models: read
+
+jobs:
+  inference:
+    name: AI Inference
+    runs-on: ubuntu-latest
+    steps:
+      # TODO: Add AI inference steps here
+      - name: Placeholder
+        run: echo "Add AI inference steps"

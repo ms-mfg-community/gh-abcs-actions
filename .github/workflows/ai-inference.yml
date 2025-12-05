@@ -1,17 +1,18 @@
+---
 name: 08-1. AI Inference
 
 on:
   push:
     branches:
-      - 'feature/**'
+      - "feature/**"
   pull_request:
     branches: [main]
   workflow_dispatch:
     inputs:
       code_to_review:
-        description: 'Code snippet to review'
+        description: "Code snippet to review"
         required: false
-        default: 'function add(a, b) { return a + b; }'
+        default: "function add(a, b) { return a + b; }"
 
 permissions:
   models: read
@@ -30,7 +31,9 @@ jobs:
         with:
           prompt-file: .github/prompts/code-review.prompt.yml
           input: |
-            code_snippet: ${{ github.event.inputs.code_to_review || 'function add(a, b) { return a + b; }' }}
+            code_snippet: >-
+              ${{ github.event.inputs.code_to_review ||
+              'function add(a, b) { return a + b; }' }}
           max-tokens: 300
 
       - name: Display Review

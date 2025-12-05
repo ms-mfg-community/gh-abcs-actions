@@ -8,11 +8,6 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
-    inputs:
-      code_to_review:
-        description: "Code snippet to review"
-        required: false
-        default: "function add(a, b) { return a + b; }"
 
 permissions:
   models: read
@@ -22,42 +17,12 @@ jobs:
     name: AI Inference
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Run AI Code Review
+      - name: Placeholder
         id: ai
-        uses: actions/ai-inference@v1
-        with:
-          prompt-file: .github/prompts/code-review.prompt.yml
-          input: |
-            code_snippet: >-
-              ${{ github.event.inputs.code_to_review ||
-              'function add(a, b) { return a + b; }' }}
-          max-tokens: 500
+        run: echo "Add AI inference steps"
 
-      - name: Display Raw Response
+      - name: Display Response
         run: |
-          echo "Raw JSON response:"
-          echo '${{ steps.ai.outputs.response }}'
-
-      - name: Parse and Display Review
-        run: |
-          echo "=== Parsed Code Review ==="
-          echo ""
-          echo "Summary: $(echo '${{ steps.ai.outputs.response }}' | jq -r '.summary')"
-          echo "Score: $(echo '${{ steps.ai.outputs.response }}' | jq -r '.score')/10"
-          echo ""
-          echo "Issues found:"
-          echo '${{ steps.ai.outputs.response }}' | jq -r '.issues[] | "  - [\(.severity)] \(.description)"'
-          echo ""
-          echo "Top suggestion: $(echo '${{ steps.ai.outputs.response }}' | jq -r '.suggestion')"
-
-      - name: Use Score in Conditional
-        run: |
-          SCORE=$(echo '${{ steps.ai.outputs.response }}' | jq -r '.score')
-          if [ "$SCORE" -ge 7 ]; then
-            echo "✅ Code quality is good (score: $SCORE)"
-          else
-            echo "⚠️ Code needs improvement (score: $SCORE)"
-          fi
+          cat <<'EOF'
+          ${{ steps.ai.outputs.response }}
+          EOF

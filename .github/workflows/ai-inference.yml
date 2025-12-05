@@ -1,9 +1,10 @@
+---
 name: 08-1. AI Inference
 
 on:
   push:
     branches:
-      - 'feature/**'
+      - "feature/**"
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -16,6 +17,12 @@ jobs:
     name: AI Inference
     runs-on: ubuntu-latest
     steps:
-      # TODO: Add AI inference steps here
       - name: Placeholder
+        id: ai
         run: echo "Add AI inference steps"
+
+      - name: Display Response
+        run: |
+          cat <<'EOF'
+          ${{ steps.ai.outputs.response }}
+          EOF

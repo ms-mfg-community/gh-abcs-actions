@@ -55,7 +55,7 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Disable linters added in v8 that fail on pre-existing code
-          # TODO: Address these in a future story
+          # todo: Address these in a future story
           VALIDATE_BIOME_FORMAT: false
           VALIDATE_BIOME_LINT: false
           VALIDATE_TRIVY: false

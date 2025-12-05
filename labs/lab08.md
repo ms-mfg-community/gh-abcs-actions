@@ -1,8 +1,11 @@
 # 8 - AI Inference with GitHub Actions
+
 In this lab you will use AI inference capabilities within GitHub Actions workflows.
+
 > Duration: 15-20 minutes
 
 References:
+
 - [GitHub Actions AI Inference Action](https://github.com/actions/ai-inference)
 - [GitHub Models Documentation](https://docs.github.com/en/github-models)
 - [Using GitHub Models in GitHub Actions](https://docs.github.com/en/github-models/use-github-models-in-github-actions)
@@ -19,6 +22,7 @@ GitHub Actions requires explicit permission to access GitHub Models. The `models
 
 1. Open the workflow file [ai-inference.yml](/.github/workflows/ai-inference.yml)
 2. Review the existing structure:
+
 ```YAML
 ---
 name: 08-1. AI Inference
@@ -53,7 +57,8 @@ jobs:
 
 ### Add the AI Inference Step
 
-3. Edit the file and replace the placeholder step (the TODO comment and Placeholder step) with the following YAML content (keep the `Display Response` step that follows):
+3. Edit the file and replace the `Placeholder` step with the following YAML content (keep the `Display Response` step that follows):
+
 ```YAML
       - name: Run AI Inference
         id: ai
@@ -64,6 +69,7 @@ jobs:
 ```
 
 > **Note:** The `actions/ai-inference@v1` action accepts these key inputs:
+>
 > - `prompt`: The text prompt to send to the AI model
 > - `model`: The model to use (defaults to `openai/gpt-4o`)
 > - `max-tokens`: Maximum tokens in the response (controls response length)
@@ -76,7 +82,7 @@ jobs:
 5. Go to `Actions` and see the details of your running workflow (the workflow triggers automatically on push to feature branches)
 6. Click into the workflow run and expand the `Display Response` step to see the AI-generated explanation of GitHub Actions
 7. Open a new pull request from `Pull requests`
-> Make sure it is your repository pull request to not propose changes to the upstream repository. From the drop-down list choose the base repository to be yours.
+   > Make sure it is your repository pull request to not propose changes to the upstream repository. From the drop-down list choose the base repository to be yours.
 8. Once all checks have passed, click on the button `Merge pull request` to complete the PR
 9. Go to `Actions` and see the details of your running workflow
 
@@ -87,6 +93,7 @@ In this section, you'll learn how to externalize prompts to files and use templa
 ### Why Use Prompt Files?
 
 Externalizing prompts to files offers several advantages:
+
 - **Reusability**: Share prompts across multiple workflows
 - **Version Control**: Track prompt changes in Git history
 - **Separation of Concerns**: Keep prompts separate from workflow logic
@@ -97,7 +104,7 @@ Externalizing prompts to files offers several advantages:
 1. Open the prompt file [code-review.prompt.yml](/.github/prompts/code-review.prompt.yml)
 2. Review the existing placeholder structure, then replace the contents with:
 
-```YAML
+````YAML
 messages:
   - role: system
     content: |
@@ -115,13 +122,14 @@ messages:
       {{code_snippet}}
       ```
 model: openai/gpt-4o
-```
+````
 
 > **Note:** The `{{code_snippet}}` syntax is a template variable. The double braces indicate a placeholder that will be replaced with actual values at runtime.
 
 ### Understanding the Prompt File Structure
 
 The `.prompt.yml` file uses a structured format:
+
 - **messages**: An array of message objects defining the conversation
   - **role**: Either `system` (sets AI behavior) or `user` (the actual prompt)
   - **content**: The message text (supports multi-line with `|`)
@@ -132,10 +140,13 @@ The `.prompt.yml` file uses a structured format:
 3. Open the workflow file [ai-inference.yml](/.github/workflows/ai-inference.yml) and make the following changes:
 
 **First**, add input parameters to the `workflow_dispatch` trigger by replacing:
+
 ```YAML
   workflow_dispatch:
 ```
+
 with:
+
 ```YAML
   workflow_dispatch:
     inputs:
@@ -146,6 +157,7 @@ with:
 ```
 
 **Second**, replace the `Run AI Inference` step that we added in 8.1 with the following (keep the `Display Response` step):
+
 ```YAML
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -163,6 +175,7 @@ with:
 ```
 
 > **Key Changes from Section 8.1:**
+>
 > - Added `actions/checkout@v4` step - **required** when using `prompt-file` (the file must exist on the runner)
 > - Added `workflow_dispatch.inputs.code_to_review` - allows custom input when manually triggering
 > - Changed from `prompt` to `prompt-file` - references the external prompt file
@@ -171,6 +184,7 @@ with:
 ### Understanding Template Variables
 
 The `input` parameter maps values to template variables:
+
 ```yaml
 input: |
   code_snippet: ${{ github.event.inputs.code_to_review || 'default value' }}
@@ -194,7 +208,7 @@ This replaces `{{code_snippet}}` in the prompt file with the provided value. The
 <details>
   <summary>code-review.prompt.yml</summary>
 
-```YAML
+````YAML
 messages:
   - role: system
     content: |
@@ -212,7 +226,8 @@ messages:
       {{code_snippet}}
       ```
 model: openai/gpt-4o
-```
+````
+
 </details>
 
 <details>
@@ -264,4 +279,5 @@ jobs:
           EOF
 
 ```
+
 </details>

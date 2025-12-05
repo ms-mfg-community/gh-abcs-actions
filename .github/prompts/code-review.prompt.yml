@@ -1,4 +1,4 @@
-# TODO: Add prompt messages and model configuration here
+# todo: Add prompt messages and model configuration here
 messages:
   - role: system
     content: |

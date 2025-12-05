@@ -36,7 +36,7 @@ jobs:
               'function add(a, b) { return a + b; }' }}
           max-tokens: 300
 
-      - name: Display Response
+      - name: Display Review
         run: |
           cat <<'EOF'
           ${{ steps.ai.outputs.response }}

@@ -39,7 +39,6 @@ jobs:
     name: AI Inference
     runs-on: ubuntu-latest
     steps:
-      # TODO: Add AI inference steps here
       - name: Placeholder
         run: echo "Add AI inference steps"
 
@@ -89,7 +88,7 @@ In this section, you'll learn how to externalize prompts to files and use templa
 
 Externalizing prompts to files offers several advantages:
 - **Reusability**: Share prompts across multiple workflows
-- **Version Control**: Track prompt changes in git history
+- **Version Control**: Track prompt changes in Git history
 - **Separation of Concerns**: Keep prompts separate from workflow logic
 - **Maintainability**: Update prompts without modifying workflows
 

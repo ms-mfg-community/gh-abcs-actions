@@ -365,6 +365,7 @@ jobs:
           else
             echo "⚠️ Code needs improvement (score: $SCORE)"
           fi
+
 ```
 
 > **New Steps Explained:**
@@ -540,6 +541,7 @@ jobs:
           else
             echo "⚠️ Code needs improvement (score: $SCORE)"
           fi
+
 ```
 
 </details>

@@ -34,4 +34,7 @@ jobs:
           max-tokens: 300
 
       - name: Display Review
-        run: echo "${{ steps.ai.outputs.response }}"
+        run: |
+          cat <<'EOF'
+          ${{ steps.ai.outputs.response }}
+          EOF

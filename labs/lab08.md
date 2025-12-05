@@ -510,6 +510,7 @@ Add the MCP demo job to your workflow. Open [ai-inference.yml](/.github/workflow
           max-tokens: 500
           enable-github-mcp: true
           github-mcp-token: ${{ secrets.GH_MCP_TOKEN }}
+          github-mcp-toolsets: repos,issues,pull_requests
 
       - name: Display MCP Response
         run: |
@@ -522,6 +523,7 @@ Add the MCP demo job to your workflow. Open [ai-inference.yml](/.github/workflow
 > - `if: ${{ vars.ENABLE_MCP_DEMO == 'true' }}` — Job only runs when the variable is set
 > - `enable-github-mcp: true` — Activates MCP integration
 > - `github-mcp-token: ${{ secrets.GH_MCP_TOKEN }}` — Provides authentication for MCP
+> - `github-mcp-toolsets: repos,issues,pull_requests` — Specifies which MCP tools to enable
 
 ### Test MCP Integration
 
@@ -710,6 +712,7 @@ jobs:
           max-tokens: 500
           enable-github-mcp: true
           github-mcp-token: ${{ secrets.GH_MCP_TOKEN }}
+          github-mcp-toolsets: repos,issues,pull_requests
 
       - name: Display MCP Response
         run: |

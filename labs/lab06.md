@@ -84,3 +84,81 @@ jobs:
           echo "Hello ${{ github.event.inputs.name }}, from self-hosted windows runner!"
 ```
 6. Clean up your runner resources if not needed
+
+## (Optional) 6.2 Private Networking for GitHub-Hosted Runners
+
+This section covers configuring GitHub-hosted runners with Azure VNET integration, enabling runners to access private resources without self-hosting.
+
+### What Private Networking Provides
+
+- **Private resource access**: GitHub-hosted runners connect to your Azure VNET, accessing internal databases, APIs, and on-premises resources via ExpressRoute or VPN
+- **Network policy control**: Your VNET's Network Security Groups (NSGs) apply to runners, controlling outbound traffic
+- **GitHub-managed infrastructure**: Get enterprise networking capabilities without maintaining runner infrastructure
+
+### Why This Matters
+
+- **Security & compliance**: Meet data residency and network isolation requirements
+- **Internal CI/CD access**: Connect pipelines to private artifact registries, databases, and APIs
+- **Simplified operations**: GitHub manages runner infrastructure while you control network policies
+
+> **Prerequisites:**
+> - GitHub Enterprise Cloud plan (required)
+> - Azure subscription with **Subscription Contributor** and **Network Contributor** roles
+>   - [Assign Azure roles using the Azure portal](https://learn.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal)
+>   - [Azure built-in roles reference](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles)
+> - Existing Azure VNET with available subnet (minimum /28 CIDR recommended)
+>   - [Quickstart: Create an Azure Virtual Network](https://learn.microsoft.com/en-us/azure/virtual-network/quickstart-create-virtual-network)
+
+### Configuration Steps
+
+Setting up private networking involves Azure configuration and GitHub Enterprise settings:
+
+1. **Register the GitHub.Network resource provider** in your Azure subscription
+   - In Azure Portal: **Subscriptions** → Select your subscription → **Settings** → **Resource providers**
+   - Search for `GitHub.Network` and click **Register**
+   - Or via Azure CLI: `az provider register --namespace GitHub.Network`
+   - [Azure resource providers and types](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-providers-and-types)
+
+2. **Add a new subnet to your existing VNET** (from Lab 6.1's Azure setup)
+   - In Azure Portal: **Virtual networks** → Select your VNET → **Subnets** → **+ Subnet**
+   - Configure the subnet with these settings:
+     | Setting | Value |
+     |---------|-------|
+     | **Subnet purpose** | `Default` |
+     | **Name** | `github-runners` (or your preferred name) |
+     | **Starting address** | Use next available in your VNET (e.g., `10.0.1.0` if `10.0.0.0` is used) |
+     | **Size** | `/28` minimum (16 IPs). Use `/27` for ~30 concurrent runners |
+     | **Subnet delegation** | Select `GitHub.Network/networkSettings` |
+     | All other settings | Leave as defaults |
+   - Click **Add**
+   - [Add or change a subnet](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-subnet) | [Subnet delegation](https://learn.microsoft.com/en-us/azure/virtual-network/manage-subnet-delegation)
+
+3. **Create a network configuration** in GitHub Enterprise settings
+   - Links your Azure VNET subnet to GitHub
+   - [Configuring private networking for GitHub-hosted runners](https://docs.github.com/en/enterprise-cloud@latest/admin/configuring-settings/configuring-private-networking-for-hosted-compute-products/configuring-private-networking-for-github-hosted-runners-in-your-enterprise)
+
+4. **Create a runner group** with the network configuration
+   - Runner groups organize runners and apply network settings
+   - [About private networking with GitHub-hosted runners](https://docs.github.com/en/enterprise-cloud@latest/admin/configuring-settings/configuring-private-networking-for-hosted-compute-products/about-azure-private-networking-for-github-hosted-runners-in-your-enterprise)
+
+5. **Use the runner group in your workflow** with the `runs-on` group syntax:
+
+```yaml
+jobs:
+  build:
+    runs-on:
+      group: my-private-network-runner-group
+      labels: [ubuntu-latest-4cores]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Access private resource
+        run: |
+          # This runner can now access resources in your Azure VNET
+          echo "Connected to private network!"
+```
+
+> **Note:** Private networking requires larger GitHub-hosted runners (2-64 vCPU). Standard runners are not supported.
+
+> **November 2025 Update:** NICs created by the GitHub Actions service are now provisioned in a GitHub service subscription. They will not appear in your Azure portal, but networking functions identically.
+
+6. **Clean up** your Azure and GitHub resources when no longer needed

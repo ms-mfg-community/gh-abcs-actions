@@ -9,7 +9,6 @@
     build:
       runs-on:
         group: jhhain-vnet-runners
-        labels: [ubuntu-latest-4cores]
       steps:
         - uses: actions/checkout@v4
         - name: Access private resource

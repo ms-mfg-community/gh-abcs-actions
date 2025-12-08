@@ -133,13 +133,13 @@ Setting up private networking involves Azure configuration and GitHub Enterprise
    - Click **Add**
    - [Add or change a subnet](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-subnet) | [Subnet delegation](https://learn.microsoft.com/en-us/azure/virtual-network/manage-subnet-delegation)
 
-3. **Create a network configuration** in GitHub Enterprise settings
+3. **Create a network configuration** in your GitHub organization settings
    - Links your Azure VNET subnet to GitHub
-   - [Configuring private networking for GitHub-hosted runners](https://docs.github.com/en/enterprise-cloud@latest/admin/configuring-settings/configuring-private-networking-for-hosted-compute-products/configuring-private-networking-for-github-hosted-runners-in-your-enterprise)
+   - [Configuring private networking for GitHub-hosted runners in your organization](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-organization-settings/configuring-private-networking-for-github-hosted-runners-in-your-organization)
 
 4. **Create a runner group** with the network configuration
    - Runner groups organize runners and apply network settings
-   - [About private networking with GitHub-hosted runners](https://docs.github.com/en/enterprise-cloud@latest/admin/configuring-settings/configuring-private-networking-for-hosted-compute-products/about-azure-private-networking-for-github-hosted-runners-in-your-enterprise)
+   - [About Azure private networking for GitHub-hosted runners in your organization](https://docs.github.com/en/enterprise-cloud@latest/organizations/managing-organization-settings/about-azure-private-networking-for-github-hosted-runners-in-your-organization)
 
 5. **Use the runner group in your workflow** with the `runs-on` group syntax:
 

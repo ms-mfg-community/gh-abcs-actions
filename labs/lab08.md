@@ -410,13 +410,6 @@ The `-r` flag outputs raw strings without JSON quotes.
 
 ## 8.4 Repository Context with MCP (Advanced - Optional)
 
-> **⚠️ TEMPORARILY UNAVAILABLE:** This section is currently blocked due to an upstream bug in the `actions/ai-inference` MCP integration. The GitHub MCP server returns an invalid tool schema that causes API errors. This section will be re-enabled once the issue is resolved. Please proceed to section 8.5 (Final).
-
-<!--
-NOTE TO MAINTAINERS: Remove this notice and uncomment the section below once
-the actions/ai-inference MCP integration is fixed. The bug is:
-"400 Invalid schema for function 'get_me': In context=(), object schema missing properties"
-
 > **This section is optional.** It requires creating a Personal Access Token (PAT) and storing it as a repository secret. If you're not comfortable with PAT management or want to skip advanced content, proceed directly to section 8.5 (Final).
 
 In this section, you'll enable Model Context Protocol (MCP) integration, allowing the AI model to access your repository's context — issues, pull requests, files, and more.
@@ -566,7 +559,6 @@ To maintain security:
 4. **Close the test issue:** Issues → Close `TEST-MCP-VERIFY` issue
 
 > **Best Practice:** Always delete PATs when no longer needed. For production use, consider GitHub Apps with installation tokens instead of PATs.
--->
 
 ## 8.5 Final
 
@@ -702,6 +694,30 @@ jobs:
             echo "⚠️ Code needs improvement (score: $SCORE)"
           fi
 
+  # Optional: MCP Integration Demo (requires PAT)
+  # This job only runs if ENABLE_MCP_DEMO variable is set to 'true'
+  mcp-demo:
+    name: MCP Demo (Optional)
+    runs-on: ubuntu-latest
+    if: ${{ vars.ENABLE_MCP_DEMO == 'true' }}
+    steps:
+      - name: Run AI with Repository Context
+        id: mcp-ai
+        uses: actions/ai-inference@v1
+        with:
+          prompt: |
+            You have access to this repository's context via MCP.
+            Please list the open issues in this repository, including their
+            numbers and titles. If there are no open issues, say so.
+          max-tokens: 500
+          enable-github-mcp: true
+          github-mcp-token: ${{ secrets.GH_MCP_TOKEN }}
+          github-mcp-toolsets: repos,issues,pull_requests
+
+      - name: Display MCP Response
+        run: |
+          echo "=== AI Response with Repository Context ==="
+          echo "${{ steps.mcp-ai.outputs.response }}"
 ```
 
 </details>

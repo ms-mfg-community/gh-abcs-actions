@@ -8,6 +8,11 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      code_to_review:
+        description: "Code snippet to review"
+        required: false
+        default: "function add(a, b) { return a + b; }"
 
 permissions:
   models: read
@@ -17,15 +22,45 @@ jobs:
     name: AI Inference
     runs-on: ubuntu-latest
     steps:
-      - name: Placeholder
-        id: ai
-        run: echo "Add AI inference steps"
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Display Response
+      - name: Run AI Code Review
+        id: ai
+        uses: actions/ai-inference@v1
+        with:
+          prompt-file: .github/prompts/code-review.prompt.yml
+          input: |
+            code_snippet: >-
+              ${{ github.event.inputs.code_to_review ||
+              'function add(a, b) { return a + b; }' }}
+          max-tokens: 500
+
+      - name: Display Raw Response
         run: |
-          cat <<'EOF'
-          ${{ steps.ai.outputs.response }}
-          EOF
+          echo "Raw JSON response:"
+          echo '${{ steps.ai.outputs.response }}'
+
+      - name: Parse and Display Review
+        run: |
+          echo "=== Parsed Code Review ==="
+          echo ""
+          echo "Summary: $(echo '${{ steps.ai.outputs.response }}' | jq -r '.summary')"
+          echo "Score: $(echo '${{ steps.ai.outputs.response }}' | jq -r '.score')/10"
+          echo ""
+          echo "Issues found:"
+          echo '${{ steps.ai.outputs.response }}' | jq -r '.issues[] | "  - [\(.severity)] \(.description)"'
+          echo ""
+          echo "Top suggestion: $(echo '${{ steps.ai.outputs.response }}' | jq -r '.suggestion')"
+
+      - name: Use Score in Conditional
+        run: |
+          SCORE=$(echo '${{ steps.ai.outputs.response }}' | jq -r '.score')
+          if [ "$SCORE" -ge 7 ]; then
+            echo "✅ Code quality is good (score: $SCORE)"
+          else
+            echo "⚠️ Code needs improvement (score: $SCORE)"
+          fi
 
   # Optional: MCP Integration Demo (requires PAT)
   # This job only runs if ENABLE_MCP_DEMO variable is set to 'true'

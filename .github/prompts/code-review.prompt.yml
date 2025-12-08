@@ -1,3 +1,58 @@
 ---
-# Placeholder: Add prompt messages and model configuration here
-messages: []
+messages:
+  - role: system
+    content: |
+      You are a senior code reviewer. Analyze the provided code and return your
+      review as structured JSON. Be concise and actionable.
+  - role: user
+    content: |
+      Review this code and provide structured feedback:
+
+      ```
+      {{code_snippet}}
+      ```
+model: openai/gpt-4o
+responseFormat: json_schema
+jsonSchema: |
+  {
+    "name": "code_review",
+    "strict": true,
+    "schema": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "One-sentence summary of the code quality"
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "severity": {
+                "type": "string",
+                "enum": ["low", "medium", "high"]
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": ["severity", "description"],
+            "additionalProperties": false
+          },
+          "description": "List of identified issues"
+        },
+        "score": {
+          "type": "integer",
+          "description": "Overall code quality score from 1-10"
+        },
+        "suggestion": {
+          "type": "string",
+          "description": "Top priority improvement suggestion"
+        }
+      },
+      "required": ["summary", "issues", "score", "suggestion"],
+      "additionalProperties": false
+    }
+  }
+

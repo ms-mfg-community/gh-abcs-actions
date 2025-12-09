@@ -149,7 +149,7 @@ The deployment script and Bicep template are located in `.github/bicep/`. The sc
 Edit `.github/bicep/deployment_script.sh` and configure these variables:
 
 | Variable | Description | Example |
-|----------|-------------|---------|
+| -------- | ----------- | ------- |
 | `AZURE_LOCATION` | Azure region for resources | `westus2` |
 | `SUBSCRIPTION_ID` | Your Azure subscription ID | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
 | `RESOURCE_GROUP_NAME` | Name for new resource group | `github-runners-rg` |
@@ -198,7 +198,7 @@ Save the `GitHubId` from the output—you'll need it for the GitHub configuratio
 4. Click **Create runner**
 
 > **Important:** The runner **Name** you enter becomes the label used in your workflow's `runs-on.labels` field. For example, if you name your runner `ubuntu-vnet-4core`, you reference it as `labels: [ubuntu-vnet-4core]`.
-
+>
 > **Note:** Private networking requires larger GitHub-hosted runners. Standard runners are not supported.
 
 #### Step 6: Create a workflow to test the private network runner

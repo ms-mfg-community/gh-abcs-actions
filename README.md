@@ -1,70 +1,89 @@
 # gh-abcs-actions
+
 > The GitHub ABCs actions training with workflow templates, examples, hands-on labs and additional learning resources.
 
 ## Examples & Hands-on Labs
 
 ### Hands-on Labs Setup
+
 - [ ] [Lab Setup](/labs/setup.md)
 
 ### Module 1: Introduction to GitHub Actions
+
 - Example: [github-actions-demo.yml](/.github/workflows/github-actions-demo.yml)
 - Example: [greet-everyone.yml](/.github/workflows/greet-everyone.yml)
 - [ ] _Hands-on Lab:_ :point_right: [Activity 1](/labs/lab01.md)
 
 ### Module 2: Syntax
+
 - Example: [simple-workflow.yml](/.github/workflows/simple-workflow.yml)
 - Example: [job-dependencies.yml](/.github/workflows/job-dependencies.yml)
 - [ ] _Hands-on Lab:_ :point_right: [Activity 2](/labs/lab02.md)
 
 ### Module 3: Environments and Secrets
+
 - Example: [environments-secrets.yml](/.github/workflows/environments-secrets.yml)
 - [ ] _Hands-on Lab:_ :point_right: [Activity 3](/labs/lab03.md)
 
 ### Module 4: Workflow Templates
+
 - Example: [reusable-workflow-template.yml](/.github/workflows/reusable-workflow-template.yml)
 - Example: [super-linter.yml](/.github/workflows/super-linter.yml)
 - [ ] _Hands-on Lab:_ :point_right: [Activity 4](/labs/lab04.md)
 
 ### Module 5: Custom actions
+
 - Example: [github-script.yml](/.github/workflows/github-script.yml)
 - Example: [hello-world-composite.yml](/.github/workflows/hello-world-composite.yml)
 - Example: [use-custom-actions.yml](/.github/workflows/use-custom-actions.yml)
-- Repo: [githubabcs/hello-world-composite-action](https://github.com/githubabcs/hello-world-composite-action)
-- Repo: [write-docker-actions](https://github.com/CalinL/write-docker-actions)
-- Repo: [write-javascript-actions](https://github.com/CalinL/writing-javascript-actions)
+- Repository: [githubabcs/hello-world-composite-action](https://github.com/githubabcs/hello-world-composite-action)
+- Repository: [write-docker-actions](https://github.com/CalinL/write-docker-actions)
+- Repository: [write-javascript-actions](https://github.com/CalinL/writing-javascript-actions)
 - [ ] _Hands-on Lab:_ :point_right: [Activity 5](/labs/lab05.md)
 
 ### Module 6: Self-hosted runners
+
 - Example: [self-hosted-linux.yml](/.github/workflows/self-hosted-linux.yml)
 - [ ] _Hands-on Lab:_ :point_right: [Activity 6](/labs/lab06.md)
 
 ### Module 7: CI/CD
+
 - Example: [ci-workflow.yml](/.github/workflows/ci-workflow.yml)
 - Example: [cd-workflow.yml](/.github/workflows/cd-workflow.yml)
-- Repo: [github-actions-for-packages](https://github.com/CalinL/github-actions-for-packages)
-- Repo: [github-actions-for-ci](https://github.com/CalinL/github-actions-for-ci)
+- Repository: [github-actions-for-packages](https://github.com/CalinL/github-actions-for-packages)
+- Repository: [github-actions-for-ci](https://github.com/CalinL/github-actions-for-ci)
 - [ ] _Hands-on Lab:_ :point_right: [Activity 7](/labs/lab07.md)
+
+### Module 8: AI Inference
+
+- Example: [ai-inference.yml](/.github/workflows/ai-inference.yml)
+- [ ] _Hands-on Lab:_ :point_right: [Activity 8](/labs/lab08.md)
 
 ---
 
 ## Learning Path
+
 - [Automate your workflow with GitHub Actions](https://learn.microsoft.com/en-us/training/paths/automate-workflow-github-actions/)
 - [Manage GitHub Actions in the enterprise](https://learn.microsoft.com/en-us/training/modules/manage-github-actions-enterprise/)
 
 ---
 
 ## Additional Resources
+
 > Additional resources to continue your GitHub Actions learning journey.
 
 ### Training Manual
+
 - [GitHub Actions Training Manual](https://githubtraining.github.io/actions-facilitator-guide/#/)
 
 ### GitHub Skills
+
 - [GitHub Skills](https://github.com/skills)
 - [GitHub Actions: Continuous Delivery with Azure](https://github.com/skills/continuous-delivery-azure)
 - [Publish to GitHub Packages](https://github.com/skills/publish-packages)
 
 ### GitHub Actions Documentation
+
 - [GitHub Actions](https://docs.github.com/en/actions)
 - [GitHub Actions guides](https://docs.github.com/en/actions/guides)
 - [Authenticating with GitHub Apps](https://docs.github.com/en/developers/apps/building-github-apps/authenticating-with-github-apps#generating-a-private-key)
@@ -80,13 +99,24 @@
 - [Awesome Actions](https://github.com/sdras/awesome-actions)
 
 ### GitHub self-hosted runners on Kubernetes
+
 - [Autoscaling with self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/autoscaling-with-self-hosted-runners)
 - [Managing self-hosted runners with Actions Runner Controller](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners-with-actions-runner-controller)
 - [actions-runner-controller - A Kubernetes controller for GitHub Actions self-hosted runners.](https://github.com/actions/actions-runner-controller)
 - [GitHub Self-Hosted Runner Autoscaling with Kubernetes](https://tgrall.github.io/blog/2022/10/16/github-self-hosted-runner-autoscaling-with-kubernetes)
 - [GitHub Actions: Dive into actions-runner-controller (ARC)](https://www.youtube.com/watch?v=_F5ocPrv6io)
 
+### Optional Workflows
+
+The `optional-workflows/` directory contains workflow templates that require additional configuration before use:
+
+- **[codeql-analysis.txt](/optional-workflows/codeql-analysis.txt)** - Advanced CodeQL security scanning configuration
+  - To use: Rename to `.yml` and move to `.github/workflows/`
+  - **Important:** You must first disable GitHub's default CodeQL setup in repository Settings -> Security -> Code scanning
+  - GitHub does not allow both default setup and advanced configuration simultaneously
+
 ### Actions Changelog
+
 - [Changelog](https://github.blog/changelog/label/actions/)
 - [GitHub Actions - Sharing actions and reusable workflows from private repositories is now GA](https://github.blog/changelog/2022-12-14-github-actions-sharing-actions-and-reusable-workflows-from-private-repositories-is-now-ga/)
 - [GitHub Actions: Restrict workflows to specific runners using runner group names](https://github.blog/changelog/2022-11-01-github-actions-restrict-workflows-to-specific-runners-using-runner-group-names/)
@@ -100,6 +130,7 @@
 - [GitHub Actions: Control permissions for GITHUB_TOKEN](https://github.blog/changelog/2021-04-20-github-actions-control-permissions-for-github_token/)
 
 ### Articles
+
 - [GitHub Actions & Security: Best practices](https://devopsjournal.io/blog/2021/02/06/GitHub-Actions)
 - [Setup an internal GitHub Actions Marketplace](https://devopsjournal.io/blog/2021/10/14/GitHub-Actions-Internal-Marketplace)
 - [How to build a CI/CD pipeline with GitHub Actions in four simple steps](https://github.blog/2022-02-02-build-ci-cd-pipeline-github-actions-four-steps/)

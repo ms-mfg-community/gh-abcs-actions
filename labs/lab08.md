@@ -408,7 +408,160 @@ The `-r` flag outputs raw strings without JSON quotes.
 - **Empty arrays**: If no issues found, `issues` will be `[]` - handle this in your parsing
 - **Escaping in shell**: Always use single quotes around JSON in shell commands
 
-## 8.4 Final
+## 8.4 Repository Context with MCP (Advanced - Optional)
+
+> **This section is optional.** It requires creating a Personal Access Token (PAT) and storing it as a repository secret. If you're not comfortable with PAT management or want to skip advanced content, proceed directly to section 8.5 (Final).
+
+In this section, you'll enable Model Context Protocol (MCP) integration, allowing the AI model to access your repository's context — issues, pull requests, files, and more.
+
+### What is MCP?
+
+Model Context Protocol (MCP) is a standard that allows AI models to interact with external data sources. When enabled for GitHub, the AI can:
+
+- List and read repository issues
+- Access pull request information
+- Browse repository files and structure
+- Query workflow run history
+
+This transforms the AI from a general-purpose assistant into one that understands your specific repository.
+
+### Why a Personal Access Token?
+
+The built-in `GITHUB_TOKEN` cannot be used with MCP. You must provide either:
+
+- A **Fine-grained Personal Access Token (PAT)** — recommended for this lab
+- A GitHub App installation token
+
+We'll use a Fine-grained PAT with minimal, short-lived permissions.
+
+### Setup: Create a Personal Access Token
+
+1. Go to **GitHub Settings** → **Developer settings** → **Personal access tokens** → **Fine-grained tokens**
+2. Click **Generate new token**
+3. Configure the token:
+   - **Token name:** `lab8-mcp-token`
+   - **Expiration:** Custom 1 day (short-lived for lab purposes)
+   - **Repository access:** Select **Only select repositories** → choose your fork
+   - **Permissions** (under Repository permissions):
+     - **Contents:** Read-only
+     - **Issues:** Read-only
+     - **Metadata:** Read-only (automatically selected)
+     - **Pull requests:** Read-only
+4. Click **Generate token**
+5. **Copy the token immediately** — you won't be able to see it again
+
+> **Security Note:** Treat this token like a password. Never commit it to your repository or share it publicly. Use short expiration times and delete tokens when no longer needed.
+
+### Setup: Store the Token as a Secret
+
+1. In your repository, go to **Settings** → **Secrets and variables** → **Actions**
+2. Click **New repository secret**
+3. Configure:
+   - **Name:** `GH_MCP_TOKEN`
+   - **Secret:** Paste your token
+4. Click **Add secret**
+
+### Setup: Create a Test Issue
+
+To verify MCP is working correctly, create a distinctive test issue:
+
+1. Go to your repository's **Issues** tab
+2. Click **New issue**
+3. Create an issue with:
+   - **Title:** `TEST-MCP-VERIFY: Lab 8 MCP Test Issue`
+   - **Body:** `This issue verifies MCP integration is working correctly.`
+4. Click **Submit new issue**
+5. Note the issue number (e.g., #1, #42)
+
+This distinctive title will help verify the AI is actually querying your repository rather than hallucinating information.
+
+### Setup: Enable the MCP Demo
+
+The MCP demo job is controlled by a repository variable:
+
+1. In your repository, go to **Settings** → **Secrets and variables** → **Actions**
+2. Click on the **Variables** tab
+3. Click **New repository variable**
+4. Configure:
+   - **Name:** `ENABLE_MCP_DEMO`
+   - **Value:** `true`
+5. Click **Add variable**
+
+### Add the MCP Demo Job
+
+Add the MCP demo job to your workflow. Open [ai-inference.yml](/.github/workflows/ai-inference.yml) and add the following job after the `inference` job (at the same indentation level as `inference:`):
+
+```yaml
+  # Optional: MCP Integration Demo (requires PAT)
+  # This job only runs if ENABLE_MCP_DEMO variable is set to 'true'
+  mcp-demo:
+    name: MCP Demo (Optional)
+    runs-on: ubuntu-latest
+    if: ${{ vars.ENABLE_MCP_DEMO == 'true' }}
+    steps:
+      - name: Run AI with Repository Context
+        id: mcp-ai
+        uses: actions/ai-inference@v1
+        with:
+          prompt: |
+            You have access to this repository's context via MCP.
+            The repository is: ${{ github.repository }}
+            Please list the open issues in this repository, including their
+            numbers and titles. If there are no open issues, say so.
+          max-tokens: 500
+          enable-github-mcp: true
+          github-mcp-token: ${{ secrets.GH_MCP_TOKEN }}
+          github-mcp-toolsets: repos,issues,pull_requests
+
+      - name: Display MCP Response
+        run: |
+          echo "=== AI Response with Repository Context ==="
+          echo "${{ steps.mcp-ai.outputs.response }}"
+```
+
+> **Key Parameters:**
+>
+> - `if: ${{ vars.ENABLE_MCP_DEMO == 'true' }}` — Job only runs when the variable is set
+> - `enable-github-mcp: true` — Activates MCP integration
+> - `github-mcp-token: ${{ secrets.GH_MCP_TOKEN }}` — Provides authentication for MCP
+> - `github-mcp-toolsets: repos,issues,pull_requests` — Specifies which MCP tools to enable
+
+### Test MCP Integration
+
+1. Commit your workflow changes and push to your feature branch
+2. Go to **Actions** → select **08-1. AI Inference** workflow
+3. Click **Run workflow**
+4. Wait for completion and check the **mcp-demo** job:
+   - Verify the job ran (not skipped)
+   - Expand **Display MCP Response**
+   - Look for your test issue: `TEST-MCP-VERIFY: Lab 8 MCP Test Issue`
+   - Verify the correct issue number appears
+
+If the AI returns your exact issue title and number, MCP is working correctly!
+
+### Troubleshooting
+
+| Problem | Cause | Solution |
+| ------- | ----- | -------- |
+| Job skipped | `ENABLE_MCP_DEMO` variable not set | Add the variable with value `true` |
+| Job skipped | Variable value incorrect | Ensure value is exactly `true` (lowercase) |
+| "MCP authentication failed" | Token missing or invalid | Verify `GH_MCP_TOKEN` secret exists and token hasn't expired |
+| Empty/generic response | Token lacks permissions | Verify PAT has Issues Read-only permission |
+| Wrong issue data | AI hallucination | Verify the distinctive title appears exactly as created |
+| "Resource not accessible" | Token scoped to wrong repository | Regenerate PAT with correct repository selected |
+
+### Cleanup (After Lab)
+
+To maintain security:
+
+1. **Delete the PAT:** GitHub Settings → Developer settings → Personal access tokens → Delete `lab8-mcp-token`
+2. **Remove the secret:** Repository Settings → Secrets → Delete `GH_MCP_TOKEN`
+3. **Set variable to false:** Repository Settings → Variables → Set `ENABLE_MCP_DEMO` to `false`
+4. **Close the test issue:** Issues → Close `TEST-MCP-VERIFY` issue
+
+> **Best Practice:** Always delete PATs when no longer needed. For production use, consider GitHub Apps with installation tokens instead of PATs.
+
+## 8.5 Final
 
 <details>
   <summary>code-review.prompt.yml</summary>
@@ -542,6 +695,31 @@ jobs:
             echo "⚠️ Code needs improvement (score: $SCORE)"
           fi
 
+  # Optional: MCP Integration Demo (requires PAT)
+  # This job only runs if ENABLE_MCP_DEMO variable is set to 'true'
+  mcp-demo:
+    name: MCP Demo (Optional)
+    runs-on: ubuntu-latest
+    if: ${{ vars.ENABLE_MCP_DEMO == 'true' }}
+    steps:
+      - name: Run AI with Repository Context
+        id: mcp-ai
+        uses: actions/ai-inference@v1
+        with:
+          prompt: |
+            You have access to this repository's context via MCP.
+            The repository is: ${{ github.repository }}
+            Please list the open issues in this repository, including their
+            numbers and titles. If there are no open issues, say so.
+          max-tokens: 500
+          enable-github-mcp: true
+          github-mcp-token: ${{ secrets.GH_MCP_TOKEN }}
+          github-mcp-toolsets: repos,issues,pull_requests
+
+      - name: Display MCP Response
+        run: |
+          echo "=== AI Response with Repository Context ==="
+          echo "${{ steps.mcp-ai.outputs.response }}"
 ```
 
 </details>

@@ -9,6 +9,7 @@
     build:
       runs-on:
         group: jhhain-vnet-runners
+        labels: [jhhain-vnet-runner]
       steps:
         - uses: actions/checkout@v4
         - name: Access private resource

@@ -1,0 +1,28 @@
+name: 06-2. Private Network Runner Test
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: 'Message to display'
+        required: false
+        default: 'Hello from private network!'
+
+jobs:
+  test-private-network:
+    name: Test Private Network Connectivity
+    # Update these values with your runner group name and runner label
+    # runs-on:
+    #   group: your-runner-group-name
+    #   labels: [your-runner-name]
+    runs-on: ubuntu-latest  # Placeholder - replace with group/labels above
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify private network connectivity
+        run: |
+          echo "${{ github.event.inputs.message }}"
+          echo "Runner is connected to Azure VNET"
+          # Add commands here to test connectivity to private resources
+          # Example: curl http://internal-api.your-vnet.local/health

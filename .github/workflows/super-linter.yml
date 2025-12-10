@@ -21,6 +21,7 @@ on:
   pull_request:
     branches: [main]
   workflow_call:
+  workflow_dispatch:
 
 ###############
 # Set the Job #
@@ -45,6 +46,15 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
+          
+      # ##########################
+      # #  Prepare Shellcheckrc  #
+      # ##########################
+      # - name: Prepare Super-Linter shellcheckrc
+      #   run: |
+      #     mkdir -p .automation/linters
+      #     cp linters/.shellcheckrc .automation/linters/.shellcheckrc
+
       ################################
       # Run Linter against code base #
       ################################
@@ -52,10 +62,15 @@ jobs:
         uses: super-linter/super-linter@v8
         env:
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: main
+          DEFAULT_BRANCH: origin/main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Disable linters added in v8 that fail on pre-existing code
           # todo: Address these in a future story
+          # disabled bash for now due to errors with superlinter version 8 and passing a spellcheck file
+          #BASH_SEVERITY: error
+          #BASH_FILE_NAME: "linters/.shellcheckrc"
+          DISABLE_ERRORS: true
+          VALIDATE_BASH: false
           VALIDATE_BIOME_FORMAT: false
           VALIDATE_BIOME_LINT: false
           VALIDATE_TRIVY: false

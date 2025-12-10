@@ -1,0 +1,4 @@
+# Disable SC1091: Not following sourced files
+# This is expected - shellcheck can't follow external commands like `az`
+# and we intentionally use `. az` pattern in deployment scripts
+disable=SC1091

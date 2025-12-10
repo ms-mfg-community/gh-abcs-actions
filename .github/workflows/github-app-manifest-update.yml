@@ -12,8 +12,8 @@ jobs:
       - uses: actions/create-github-app-token@v2
         id: app-token
         with:
-          app-id: ${{ vars.CI_BOT_APP_ID }}
-          private-key: ${{ secrets.CI_BOT_PRIVATE_KEY }}
+          app-id: ${{ vars.GH_ABCS_APP_ACTIONS_APP_ID }}
+          private-key: ${{ secrets.GH_ABCS_APP_ACTIONS_APP_PRIVATE_KEY }}
 
       # 2. Checkout with App token (enables push as App identity)
       - uses: actions/checkout@v4

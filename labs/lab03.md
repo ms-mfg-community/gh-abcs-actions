@@ -109,7 +109,7 @@ The `github-actions[bot]` user is not authorized to push directly to protected b
 
 Instead of using a Personal Access Token (PAT)—which is tied to a specific user and is an antipattern for production—create a dedicated **GitHub App** for CI/CD automation:
 
-| Aspect | PAT (Antipattern)  | GitHub App (Recommended) |
+| Aspect | PAT (Antipattern) | GitHub App (Recommended) |
 | ------ | ------------------ | ------------------------ |
 | Identity | Tied to user account | Independent entity |
 | Permissions | Often overly broad | Scoped to specific needs |

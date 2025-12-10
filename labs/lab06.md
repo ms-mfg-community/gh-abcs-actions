@@ -482,11 +482,16 @@ jobs:
           echo "${{ github.event.inputs.message || 'Hello from ARC!' }}"
           echo "Running on ARC in Kubernetes!"
           echo "Node: $(hostname)"
+          echo "Waiting 60 seconds so you can observe the runner pod..."
+          sleep 60
+          echo "Done!"
 ```
 
 Update `runs-on: arc-runner-set` to match your `INSTALLATION_NAME` from Step 4.
 
 > **Note:** The workflow triggers on push to your feature branch, so it will run automatically when you push changes.
+
+> **Timing:** The workflow includes a 60-second wait so you have time to observe the runner pod in Kubernetes. ARC runners are ephemeral—they spin up for the job and terminate immediately after. If you don't check within the 60-second window, you may miss seeing the pod.
 
 #### Step 6: Run and verify the workflow
 

@@ -10,6 +10,7 @@ on:
 jobs:
   update-manifest:
     name: Update Manifest (GitHub App)
+    if: github.actor != 'jh-gh-abcs-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       # 1. Generate GitHub App token

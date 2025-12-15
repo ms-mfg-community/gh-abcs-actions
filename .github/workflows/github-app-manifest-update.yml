@@ -3,6 +3,8 @@ name: 03-2. GitHub App Manifest Update
 on:
   push:
     branches: [feature/workshop-day]
+    paths-ignore:
+      - 'manifest.yaml'
   workflow_dispatch:
 
 jobs:

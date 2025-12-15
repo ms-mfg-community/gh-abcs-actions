@@ -1,18 +1,33 @@
 name: 03-2. GitHub App Manifest Update
 
 on:
+  push:
+    branches: [feature/workshop-day]
   workflow_dispatch:
-
-# Placeholder: Complete Lab 3.3 to configure this workflow with your GitHub App
-# This workflow demonstrates pushing to a protected branch using a GitHub App
-
-permissions:
-  contents: write
 
 jobs:
   update-manifest:
     name: Update Manifest (GitHub App)
     runs-on: ubuntu-latest
     steps:
-      - name: Placeholder
-        run: echo "Complete Lab 3.3 to configure this workflow with your GitHub App"
+      # 1. Generate GitHub App token
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.CI_BOT_APP_ID }}
+          private-key: ${{ secrets.CI_BOT_PRIVATE_KEY }}
+
+      # 2. Checkout with App token (enables push as App identity)
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      # 3. Make changes and push
+      - name: Update manifest and push
+        run: |
+          echo "image: myapp:${{ github.sha }}" > manifest.yaml
+          git config user.name "ci-bot[bot]"
+          git config user.email "ci-bot[bot]@users.noreply.github.com"
+          git add manifest.yaml
+          git commit -m "Update manifest to ${{ github.sha }}"
+          git push

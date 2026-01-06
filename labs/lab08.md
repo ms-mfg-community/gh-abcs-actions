@@ -627,6 +627,122 @@ jsonSchema: |
 
 </details>
 
+## 8.6 Auto-Analyze Failures (Hands-On)
+
+In this section, you'll get hands-on exposure to an "auto-healing" pattern:
+
+- A workflow run fails
+- A separate workflow automatically triggers on that failure
+- The failure is analyzed using `actions/ai-inference` + a prompt file
+- The workflow creates a remediation issue with a recommended fix (and may optionally assign it to Copilot)
+
+This helps you learn how to combine GitHub Actions, prompt files, and the AI Inference action to triage failures and propose fixes.
+
+### How It Works (Files Involved)
+
+- Workflow: [auto-analyze-failure.yml](/.github/workflows/auto-analyze-failure.yml)
+- Prompt: [failed-run-analyze.prompt.yml](/.github/prompts/failed-run-analyze.prompt.yml)
+
+The workflow runs on `workflow_run` events, meaning it triggers automatically when other workflows complete. It only runs its analysis job when the completed workflow concluded with `failure`.
+
+### Prerequisites
+
+This workflow expects a GitHub App token (for the AI inference step) and a token for GitHub MCP access.
+
+1. If you completed Lab 03, you likely already created these:
+   - Repository **variable**: `CI_BOT_APP_ID`
+   - Repository **secret**: `CI_BOT_PRIVATE_KEY`
+
+   If you deleted them during cleanup, recreate them before continuing.
+
+2. Create a fine-grained Personal Access Token (PAT) for MCP and store it as a repository secret:
+   - Repository **secret** name: `AUTO_REMEDIATION_PAT`
+   - Suggested permissions (fine-grained token):
+     - **Actions:** Read
+     - **Contents:** Read
+     - **Issues:** Read
+     - **Pull requests:** Read
+     - (Leave anything else unset unless your org policies require it)
+
+> **Note:** This lab’s goal is to observe how the analysis workflow uses the AI Inference action and MCP to fetch the last portion of failed job logs and generate a remediation plan.
+
+> **Important:** In [auto-analyze-failure.yml](/.github/workflows/auto-analyze-failure.yml), the `actions/create-github-app-token` step uses `owner: ${{ github.repository_owner }}` so it works in forks. If you customize that value, make sure it matches the account/org that owns the repository running the workflow.
+
+### Step 1: Create a Workflow That Fails on Purpose
+
+Create a new workflow file at `.github/workflows/lab08-intentional-failure.yml` with the following contents:
+
+```yaml
+name: 08-3. Intentional Failure (for Auto-Analyze)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fail-on-purpose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain the purpose
+        run: |
+          echo "This job fails intentionally to trigger the auto-analyze workflow."
+          echo "When you finish the lab, remove this workflow or fix it."
+
+      - name: Fail intentionally
+        run: |
+          echo "::error::Intentional failure for Lab 8.6"
+          exit 1
+```
+
+Commit and push this change to your feature branch.
+
+### Step 2: Trigger the Failure
+
+1. Go to **Actions**
+2. Select **08-3. Intentional Failure (for Auto-Analyze)**
+3. Click **Run workflow**
+4. Wait for the run to fail (this is expected)
+
+### Step 3: Watch the Auto-Analyze Workflow Trigger
+
+After the failure completes, GitHub will automatically start a new workflow run for **08-2. Auto Analyze Build Failures**.
+
+1. Go to **Actions** → select **08-2. Auto Analyze Build Failures**
+2. Open the newest run (it should reference the failed workflow run in its event payload)
+3. Expand these steps:
+   - **Analyze build failure** (this calls `actions/ai-inference@v2` with the prompt file)
+   - **Parse results** (this parses the JSON response)
+   - **Create remediation issue** (this creates an issue with the summary and plan)
+
+### Step 4: Review the AI-Generated Remediation Issue
+
+1. Go to the **Issues** tab
+2. Open the newly created issue titled similar to:
+   - `🔧 Auto-Remediation: <workflow name> Build Failure`
+3. Review:
+   - **Summary**: a short explanation of what failed
+   - **Remediation Plan**: recommended steps to fix the failure
+
+If your repo supports Copilot assignment via `copilot-swe-agent` and the category is code-related, you may also see the issue assigned automatically.
+
+### Step 5: Apply the Recommended Fix and Verify
+
+For this lab, the "fix" should be straightforward:
+
+1. Update `.github/workflows/lab08-intentional-failure.yml` to stop failing (remove the failing step or change `exit 1` to `exit 0`).
+2. Commit and push.
+3. Re-run **08-3. Intentional Failure (for Auto-Analyze)** and confirm it succeeds.
+
+You should see that:
+
+- The workflow run is now green
+- The auto-analyze workflow does not create a new remediation issue for a successful run
+
+### Cleanup (Recommended)
+
+- Delete `.github/workflows/lab08-intentional-failure.yml` after the lab
+- Consider rotating/deleting `AUTO_REMEDIATION_PAT` when done
+
+
 <details>
   <summary>ai-inference.yml</summary>
 

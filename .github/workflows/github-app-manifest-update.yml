@@ -17,16 +17,35 @@ jobs:
       - uses: actions/create-github-app-token@v2
         id: app-token
         with:
-          app-id: ${{ vars.GH_ABCS_APP_ACTIONS_APP_ID }}
-          private-key: ${{ secrets.GH_ABCS_APP_ACTIONS_APP_PRIVATE_KEY }}
+          app-id: ${{ vars.CI_BOT_APP_ID }}
+          private-key: ${{ secrets.CI_BOT_PRIVATE_KEY }}
 
       # 2. Checkout with App token (enables push as App identity)
-      - uses: actions/checkout@v4
+      - name: Checkout Local Repo
+        uses: actions/checkout@v6
         with:
           token: ${{ steps.app-token.outputs.token }}
 
+      - name: Checkout Another Repo
+        uses: actions/checkout@v6
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          repository: cody-test-org/gha-ecolab-2
+          path: another-repo
+          ref: main
+
       # 3. Make changes and push
       - name: Update manifest and push
+        run: |
+          echo "image: myapp:${{ github.sha }}" > manifest.yaml
+          git config user.name "ci-bot[bot]"
+          git config user.email "ci-bot[bot]@users.noreply.github.com"
+          git add manifest.yaml
+          git commit -m "Update manifest to ${{ github.sha }}"
+          git push
+
+      - name: Update manifest and push to another repository
+        working-directory: another-repo
         run: |
           echo "image: myapp:${{ github.sha }}" > manifest.yaml
           git config user.name "ci-bot[bot]"

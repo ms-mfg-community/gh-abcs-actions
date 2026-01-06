@@ -1,4 +1,4 @@
-name: 08-2. Auto Analyze Build Failures
+name: 09-2. Auto Analyze Build Failures
 
 on:
   workflow_run:
@@ -268,7 +268,7 @@ jobs:
               
               # Check if assignment was successful
               assignees=$(echo "$assign_response" | jq -r '.data.replaceActorsForAssignable.assignable.assignees.nodes[].login')
-              if echo "$assignees" | grep -q "Copilot"; then
+              if echo "$assignees" | grep -qi "copilot"; then
                 echo "✅ Successfully assigned issue #$issue_number to Copilot"
               else
                 echo "❌ Failed to assign issue to Copilot"

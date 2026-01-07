@@ -1,7 +1,10 @@
 name: 05-2. Hello World Composite
 
-on: 
+on:
   [workflow_dispatch]
+
+permissions:
+  contents: read
 
 jobs:
   hello_world_job1:
@@ -9,7 +12,8 @@ jobs:
     name: A job1 to say hello
     steps:
       - id: hello-world
-        uses: githubabcs/hello-world-composite-action@main
+        # pinned to main branch
+        uses: githubabcs/hello-world-composite-action@d03802b01530a2b620c5690210a1e637e9db5cbb
         with:
           who-to-greet: 'Hello from GH ABCs'
       - run: echo random-number ${{ steps.hello-world.outputs.random-number }}

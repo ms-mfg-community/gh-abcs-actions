@@ -1,10 +1,12 @@
-name: 02-2. Dependencies 
+name: 02-2. Dependencies
 
 on:
   workflow_dispatch:
   push:
     branches: [feature/workshop-day]
-    
+
+permissions: {}
+
 jobs:
   initial:
     runs-on: ubuntu-latest

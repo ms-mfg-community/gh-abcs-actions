@@ -1,8 +1,11 @@
-name: 07-2. CD Workflow 
+name: 07-2. CD Workflow
 
 on:
   push:
-     branches: [main]
+    branches: [main]
+
+permissions:
+  contents: read
 
 env:
   AZURE_WEBAPP_NAME: your-app-name    # set this to your application's name
@@ -60,8 +63,9 @@ jobs:
       run: echo "Specific deploy steps..."
 
     - name: 'Deploy to Azure WebApp'
-      id: deploy-to-webapp 
-      uses: azure/webapps-deploy@v3
+      id: deploy-to-webapp
+      # pinned to v3
+      uses: azure/webapps-deploy@0efab0a4c73b728613acd71966c04beadfc20aaf
       continue-on-error: true
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}

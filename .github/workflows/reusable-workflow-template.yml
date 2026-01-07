@@ -1,7 +1,10 @@
 name: 04-1. Call Reusable Workflow Templates
 
-on: 
+on:
   [workflow_dispatch]
+
+permissions:
+  contents: read
 
 jobs:
   call_greet_everyone_workflow_job:

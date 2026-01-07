@@ -1,14 +1,15 @@
 name: 06-3. ARC Runner Test
 
 on:
-  push:
-    branches: [feature/workshop-day]
   workflow_dispatch:
     inputs:
       message:
         description: 'Message to display'
         required: false
         default: 'Hello from ARC!'
+
+permissions:
+  contents: read
 
 jobs:
   test-arc-runner:

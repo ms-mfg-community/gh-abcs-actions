@@ -1,15 +1,15 @@
 name: Self-Hosted Runners Hello
 
 on:
-  push:
-    branches: [feature/workshop-day]
   workflow_dispatch:
     inputs:
       name:
         description: 'What is your name?'
         required: true
         default: 'World'
-        
+
+permissions: {}
+
 jobs:
   say_hello_linux:
     name: Say Hello from Linux Self-Hosted Runner

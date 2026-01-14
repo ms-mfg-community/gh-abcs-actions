@@ -1,8 +1,8 @@
 name: 01-2. Greet Everyone
 # This workflow is triggered on pushes to the repository.
-on: 
+on:
   push:
-  
+
   workflow_call:
     inputs:
       name:
@@ -16,7 +16,10 @@ on:
         description: 'What is your name?'
         required: false
         default: 'Octocat'
- 
+
+permissions:
+  contents: read
+
 jobs:
   greet-users:
     # Job name is Greeting

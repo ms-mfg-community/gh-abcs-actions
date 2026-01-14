@@ -1,7 +1,10 @@
 name: 04-1. Call Reusable Workflow Templates
 
-on: 
+on:
   [workflow_dispatch]
+
+permissions:
+  contents: read
 
 jobs:
   call_greet_everyone_workflow_job:
@@ -9,8 +12,8 @@ jobs:
     with:
       name: 'Reusable Workflow Templates'
     
-  call_reusable_workflow_job:
-    uses: johnhain-msft/gh-abcs-actions/.github/workflows/super-linter.yml@main
+  # call_reusable_workflow_job:
+  #   uses: johnhain-msft/gh-abcs-actions/.github/workflows/super-linter.yml@main
 
   call_demo_workflow_job:
     needs: call_greet_everyone_workflow_job

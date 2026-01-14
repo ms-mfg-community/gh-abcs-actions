@@ -3,9 +3,13 @@ name: 03-2. GitHub App Manifest Update
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   update-manifest:
     name: Update Manifest (GitHub App)
+    if: github.actor != 'jh-gh-abcs-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       # 1. Generate GitHub App token

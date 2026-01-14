@@ -23,6 +23,10 @@ on:
   workflow_call:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  statuses: write
+
 ###############
 # Set the Job #
 ###############
@@ -59,7 +63,8 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: super-linter/super-linter@v8
+        # pinned to v8
+        uses: super-linter/super-linter@65d04d449637f8b570cbe2fd8c27f87714c5c7f2
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: origin/main

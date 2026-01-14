@@ -1,0 +1,27 @@
+name: 06-3. ARC Runner Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: 'Message to display'
+        required: false
+        default: 'Hello from ARC!'
+
+permissions:
+  contents: read
+
+jobs:
+  test-arc-runner:
+    name: Test ARC Runner
+    runs-on: arc-runner-set  # Must match your INSTALLATION_NAME
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify ARC runner
+        run: |
+          echo "${{ github.event.inputs.message || 'Hello from ARC!' }}"
+          echo "Running on ARC in Kubernetes!"
+          echo "Node: $(hostname)"
+          echo "Waiting 60 seconds so you can observe the runner pod..."
+          sleep 60
+          echo "Done!"

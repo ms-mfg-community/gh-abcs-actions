@@ -1,7 +1,10 @@
 name: 01-1. GitHub Actions Demo
-on: 
+on:
   workflow_dispatch:
   workflow_call:
+
+permissions:
+  contents: read
 
 jobs:
   Explore-GitHub-Actions:

@@ -5,3 +5,4 @@ node_modules/*
 web-bundles/*
 docs/*
 CLAUDE.md
+.github/actions/hello-world-javascript-action/node_modules/*
